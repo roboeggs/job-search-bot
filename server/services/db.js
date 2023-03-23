@@ -4,8 +4,8 @@ const {Client} = pkg;
 const conn = new Client({
     user: 'postgres',
     host: 'localhost',
-    database: 'USERS',
-    password: 'Jb6e3Eb^',
+    database: process.env.TABLE_SQL,
+    password: process.env.PASSWORD_SQL,
     port: 5432,
   });
 conn.connect(function(err) {
