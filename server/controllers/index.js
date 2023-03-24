@@ -28,9 +28,11 @@ export const getAllTodos = (req, res, next) => {
 
 //createTodo handler to add new todos to our database
 export const createTodo = (req, res, next) => {
+    console.log('I get :');
     if (!req.body) return next(new AppError("No form data found", 404));
     conn.query(
-        "SELECT * FROM users WHERE Email = '" + req.body.email + "'", 
+        "SELECT * FROM users WHERE Email = '" + req.body.email + "'",
+        // "INSERT INTO users (name, password, nickname) VALUES ('John', 'mypassword', 'JohnDoe')", 
         (err, result) => {
             if (err) return next(new AppError(err, 500));
             if (result.length != 0)

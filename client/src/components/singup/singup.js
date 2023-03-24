@@ -25,7 +25,7 @@ export default function Signup () {
       };
       
   
-      fetch('http://localhost:9000/api/register', requestOptions)
+      fetch('http://localhost:9000/api/registration', requestOptions)
         .then((res) => {
           res.json();
           if(res.status === 201){
