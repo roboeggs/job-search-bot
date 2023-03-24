@@ -1,5 +1,7 @@
 import pkg from 'pg';
+import * as dotenv from 'dotenv'
 const {Client} = pkg;
+dotenv.config()
 
 const conn = new Client({
     user: 'postgres',
