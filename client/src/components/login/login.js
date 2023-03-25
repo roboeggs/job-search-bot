@@ -47,21 +47,22 @@ const Login = () => {
     
 
     return (
-        <div className='login__container'>
-                
-            <form className='registerForm' onSubmit={handleSubmit}>
-                <h2>Login </h2>
-                <label htmlFor='email'>Email</label>
+        <>  
+            <form className='flex flex-col text-white' onSubmit={handleSubmit}>
+                <h2 className="text-5xl my-3.5 text-center">Login </h2>
+                <label className='font-bold' htmlFor='email'>Email</label>
                 <input
-                    type='text'
+                    className="px-3 text-black rounded-lg my-1.5 w-56 h-8"
+                    type='text'e
                     id='email'
                     name='email'
                     value={email}
                     required
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                <label htmlFor='password'>Password</label>
+                <label className='font-bold' htmlFor='password'>Password</label>
                 <input
+                    className="px-3 text-black rounded-lg my-1.5 w-56 h-8"
                     type='password'
                     name='password'
                     id='password'
@@ -73,15 +74,15 @@ const Login = () => {
                 {errorMessage && 
                 (<p className="error"> {errorMessage} </p>
                 )}
-                <button className='loginBtn'>SIGN IN</button>
+                <button className='rounded-lg bg-indigo-700 my-1.5 w-24 h-9'>SIGN IN</button>
                 <p>
                     Don't have an account?{" "}
-                    <span className='link' onClick={gotoSignUpPage}>
+                    <p className='' onClick={gotoSignUpPage}>
                         Sign up
-                    </span>
+                    </p>
                 </p>
             </form>
-        </div>
+        </>
     );
 };
 
