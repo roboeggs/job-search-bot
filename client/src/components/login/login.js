@@ -21,10 +21,10 @@ const Login = () => {
             .then((res) => {
                 res.json();
                 if(res.status === 102){
-                    // navigate("/users");
                     messageLod('invalid password or login');
                 }
                 else{
+                    navigate("/board");
                     messageLod(res.message);
                     console.log('my 102')
                 }
