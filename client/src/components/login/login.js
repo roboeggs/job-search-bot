@@ -20,12 +20,13 @@ const Login = () => {
         })
             .then((res) => {
                 res.json();
-                if(res.status !== 102){
-                    navigate("/users");
-                    messageLod(res.message);
+                if(res.status == 102){
+                    // navigate("/users");
+                    messageLod('invalid password or login');
                 }
                 else{
-                    messageLod('invalid password or login');
+                    messageLod(res.message);
+                    console.log('my 102')
                 }
             })
             .then((data) => {

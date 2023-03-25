@@ -9,8 +9,8 @@ let urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 
 router.route("/users").get(controllers.getAllTodos);
-router.route("/registration").post(jsonParser, controllers.createTodo);
-router.route("/login").post(jsonParser, controllers.loginTodo);
+router.route("/registration").post(jsonParser, controllers.registerUser);
+router.route("/login").post(jsonParser, controllers.checkUser);
 router.route("/usersID").get(controllers.getTodos)
     .put(controllers.updateTodo)
     .delete(controllers.deleteTodo);
