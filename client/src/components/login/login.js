@@ -20,7 +20,7 @@ const Login = () => {
         })
             .then((res) => {
                 res.json();
-                if(res.status == 102){
+                if(res.status === 102){
                     // navigate("/users");
                     messageLod('invalid password or login');
                 }
