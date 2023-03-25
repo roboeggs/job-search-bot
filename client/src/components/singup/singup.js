@@ -39,25 +39,29 @@ export default function Signup () {
     const navigate = useNavigate();
     const gotoLoginPage = () => navigate("/");
     return (
-      <form className="registerForm" onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="form-name">Your name?</label>
+      <form className="flex flex-col text-white" onSubmit={handleSubmit(onSubmit)}>
+        <h2 className="text-5xl my-3.5 text-center">Signup</h2>
+        <label className="font-bold" htmlFor="form-name">Your name?</label>
         <input id="form-name"
+          className="px-3 text-black rounded-lg my-1.5 w-56 h-8"
           {...register("name", { required: true })}
           placeholder="Ilon"
         />
   
-        <label htmlFor="form-email">Email</label>
+        <label className="font-bold" htmlFor="form-email">Email</label>
         <input id="form-email"
+          className="px-3 text-black rounded-lg my-1.5 w-56 h-8"
           {...register("email", { minLength: 1 })}
           placeholder="@gmail.com"
         />
         
-        <label htmlFor="form-password">Password</label>
+        <label className="font-bold" htmlFor="form-password">Password</label>
         <input id="form-password" type="password"
+          className="px-3 text-black rounded-lg my-1.5 w-56 h-8"
           {...register("password", { minLength: 1 })}
           placeholder="password"
         />
-        <button type="submit">submit</button>
+        <button className='rounded-lg bg-indigo-700 my-1.5 w-24 h-9' type="submit">Submit</button>
         <p>
             Already have an account?{" "}
             <span type='Login' onClick={gotoLoginPage}>

@@ -26,6 +26,6 @@ function Board(){
             console.error(error);
           });
     }
-    console.log(data());
+    // console.log(data());
 }
 export default Board;

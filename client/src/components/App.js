@@ -6,7 +6,7 @@ import Signup from "./Singup/Singup";
 // import Header from './landing/Header'; // прошу любить и жаловать компонент header
 // import Bed from './landing/Bed' // и окажите компоненту bed тёплый приём
 // import InfoForm from './landing/InfoForm';
-import './App.css';
+// import './App.css';
 
 function App() {
   return (
