@@ -1,5 +1,10 @@
+import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import * as dotenv from 'dotenv'
+dotenv.config()
 import AppError  from "../utils/appError/index.js";
 import conn from "../services/db.js";
+
 function formatDate(date) {
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -43,17 +48,38 @@ export const registerUser = async (req, res, next) =>{
     }
     else{
         // insert into the table
-        const insertQuery = 'INSERT INTO users (name, password, email) VALUES ($1, $2, $3)';
+        const insertQuery = 'INSERT INTO users (name, password, email) VALUES ($1, $2, $3) RETURNING id';
         const insertValues = [req.body.name, req.body.password, req.body.email];
-        await conn.query(insertQuery, insertValues, (err) => {
-            console.log(err);
-            if (err) return next(new AppError(err, 500));
-
-            res.status(201).json({
-                status: "success",
-                message: "todo created!",
-            });
+        const result  = await conn.query(insertQuery, insertValues);
+        const userId = result.rows[0].id;
+        
+        // Параметры для генерации токена
+        const payload = { 
+            user_id: userId,
+            username: req.body.name
+          };
+        const secretKey = process.env.MY_SECRET_KEY; // Секретный ключ для подписи токена
+        const options = { expiresIn: 60 }; // Время жизни токена
+    
+        // Генерация токена
+        const jwtToken = jwt.sign(payload, secretKey, options);
+        const query = {
+            text: 'UPDATE users SET jwt_token = $1 WHERE id = $2',
+            values: [jwtToken, userId],
+          };
+        await conn.query(query, (err) => {
+            if (err) {
+              console.error(err);
+            }
         });
+          // Отправка токена клиенту
+        console.log(userId);
+        res.status(201).json({
+            status: "success",
+            message: "todo created!",
+            token: jwtToken
+        });
+        
     }
 }
 

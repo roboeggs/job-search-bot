@@ -1,7 +1,6 @@
 ﻿import express from 'express';
 import cors from 'cors';
 
-//const bodyParser = require("body-parser");
 
 import router from "./routes/index.js";
 import AppError from "./utils/appError/index.js";
