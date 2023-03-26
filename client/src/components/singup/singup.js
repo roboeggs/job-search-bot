@@ -26,13 +26,19 @@ export default function Signup () {
       
   
       fetch('http://localhost:9000/api/registration', requestOptions)
-        .then((res) => {
-          res.json();
-          if(res.status === 201){
-            navigate("/users");
+      .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to authenticate user');
           }
-          console.log(res.message);
+          return response.json();
         })
+        .then((data) => {
+          const jwtToken = data.jwtToken;
+          localStorage.setItem('jwtToken', jwtToken);
+          console.log(`Authenticated user with JWT token ${jwtToken}`);
+          navigate("/board");
+        })
+        .catch((error) => console.error(error));
   
        
     };
