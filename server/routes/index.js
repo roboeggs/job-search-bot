@@ -7,7 +7,7 @@ const router = express.Router();
 let jsonParser = bodyParser.json();
 let urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-
+router.route("/protected").get(controllers.getAllTodos);
 router.route("/users").get(controllers.getAllTodos);
 router.route("/registration").post(jsonParser, controllers.registerUser);
 router.route("/login").post(jsonParser, controllers.checkUser);
