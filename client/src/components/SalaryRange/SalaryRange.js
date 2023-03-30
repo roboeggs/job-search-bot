@@ -4,10 +4,12 @@ import PropTypes from 'prop-types';
 function SalaryRange({ value, onChange }) {
   const [minSalary, setMinSalary] = useState(value && value[0] !== undefined ? value[0] : '');
   const [maxSalary, setMaxSalary] = useState(value && value[1] !== undefined ? value[1] : '');
+
   const [currency, setCurrency] = useState('rub');
 
   const handleMinSalaryChange = (event) => {
     const newMinSalary = event.target.value;
+    console.log(newMinSalary);
     if (newMinSalary === '' || (maxSalary !== '' && parseInt(newMinSalary) <= parseInt(maxSalary))) {
       setMinSalary(newMinSalary);
       if (onChange) {
@@ -25,7 +27,6 @@ function SalaryRange({ value, onChange }) {
       }
     }
   };
-
   const handleCurrencyChange = (event) => {
     setCurrency(event.target.value);
     if (onChange) {
