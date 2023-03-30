@@ -1,26 +1,57 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
 
 function RegionSelect({ value, onChange, addRegion, removeRegion, regions }) {
   const [newRegion, setNewRegion] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
-  const handleNewRegionChange = (event) => {
-    setNewRegion(event.target.value);
-  };
 
   const handleNewRegionSubmit = (event) => {
     event.preventDefault();
-    addRegion(newRegion);
-    setNewRegion('');
+    if (newRegion.trim() !== '') {
+      addRegion(newRegion.trim());
+      setNewRegion('');
+    }
   };
 
   const handleRegionClick = (region) => {
     removeRegion(region);
   };
 
+  const handleNewRegionChange = (event) => {
+    const newRegionValue = event.target.value.trim();
+    setNewRegion(newRegionValue);
+    debouncedSearch(newRegionValue);
+  };
+  
+  const debouncedSearch = debounce((newRegionValue) => {
+    if (newRegionValue.trim() !== '' && newRegionValue.trim().length > 2) {
+      const url = new URL("https://api.hh.ru/suggests/area_leaves");
+      url.search = new URLSearchParams({
+        text: newRegionValue.trim(),
+      });
+      fetch(url, {
+        method: "GET",
+        headers: {
+          "User-Agent": "application/json"
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        setSearchResults(data.items);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    } else {
+      setSearchResults([]);
+    }
+  }, 2000);
+
   return (
     <div>
-      <form onSubmit={handleNewRegionSubmit} className="flex mb-4">
+      <form onSubmit={handleNewRegionSubmit} className="flex">
         <input
           type="text"
           value={newRegion}
@@ -32,25 +63,27 @@ function RegionSelect({ value, onChange, addRegion, removeRegion, regions }) {
           Add
         </button>
       </form>
+      {searchResults.map((region) => (
+        <div
+          key={region.id}
+          onClick={() => {
+            addRegion(region.name);
+            setNewRegion('');
+            setSearchResults([]);
+          }}
+          className="flex text-black items-center justify-between bg-gray-100 rounded-lg px-4 py-2 mt-2 cursor-pointer"
+        >
+          <span>{region.name}</span>
+        </div>
+      ))}
       {regions.map((region) => (
         <div
           key={region}
           onClick={() => handleRegionClick(region)}
-          className="flex text-black w-32 items-center justify-between bg-gray-100 rounded-lg px-4 py-2 mb-2 cursor-pointer"
+          className="flex text-black items-center justify-between bg-gray-100 rounded-lg px-4 py-2 mt-2 cursor-pointer"
         >
           <span>{region}</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 text-red-500"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M3.343 3.343a1 1 0 0 1 0 1.414L8.586 10l-5.243 5.243a1 1 0 1 1-1.414-1.414L7.172 10 2.93 5.757a1 1 0 0 1 0-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
         </div>
       ))}
     </div>
@@ -62,7 +95,7 @@ RegionSelect.propTypes = {
   onChange: PropTypes.func,
   addRegion: PropTypes.func,
   removeRegion: PropTypes.func,
-  regions: PropTypes.arrayOf(PropTypes.string),
+  regions: PropTypes.array
 };
 
 export default RegionSelect;

@@ -5,7 +5,7 @@ function ResponseExample() {
 
   return (
     <div>
-      <h2 className="text-black text-xl font-bold mb-4">Response Example</h2>
+      <h2 className="text-xl font-bold mb-4">Response Example</h2>
       <div className="bg-gray-100 p-4 rounded-md">
         <textarea className="text-black w-full h-40 border border-gray-300 p-2" value={response} readOnly />
       </div>

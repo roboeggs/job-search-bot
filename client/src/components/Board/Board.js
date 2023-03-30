@@ -6,7 +6,7 @@ import Header from '../Header/Header';
 import ProfileSidebar from '../ProfileSidebar/ProfileSidebar';
 import SearchBar from '../SearchBar/SearchBar'; 
 
-function App() {
+function Board() {
   const [regions, setRegions] = useState(['Moscow', 'Saint Petersburg']);
   const [salaryRange, setSalaryRange] = useState({ from: '', to: '' });
   const [isProfileSidebarOpen, setIsProfileSidebarOpen] = useState(false);
@@ -57,14 +57,15 @@ function App() {
           ))}
         </ul>
         <h2 className="text-xl font-bold my-4">
-          Selected Salary Range: {salaryRange.from} - {salaryRange.to}
+          Selected Salary Range: {salaryRange.from[0]} - {salaryRange.from[1]}
+          <span className="uppercase"> {salaryRange.to}</span>
         </h2>
         <ResponseExample />
       </div>
-      {isProfileSidebarOpen && <ProfileSidebar isOpen={isProfileSidebarOpen} onClose={handleProfileSidebarClose} />}
+      <ProfileSidebar isOpen={isProfileSidebarOpen} onClose={handleProfileSidebarClose} />
 
     </div>
   );
 }
 
-export default App;
+export default Board;
