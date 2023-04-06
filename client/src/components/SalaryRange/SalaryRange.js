@@ -9,24 +9,26 @@ function SalaryRange({ value, onChange }) {
 
   const handleMinSalaryChange = (event) => {
     const newMinSalary = event.target.value;
-    console.log(newMinSalary);
-    if (newMinSalary === '' || (maxSalary !== '' && parseInt(newMinSalary) <= parseInt(maxSalary))) {
-      setMinSalary(newMinSalary);
-      if (onChange) {
-        onChange([newMinSalary, maxSalary], currency);
-      }
+    setMinSalary(newMinSalary);
+    if (maxSalary !== '' && newMinSalary > maxSalary) {
+      setMaxSalary(newMinSalary);
+    }
+    if (onChange) {
+      onChange([newMinSalary, maxSalary], currency);
     }
   };
-
+  
   const handleMaxSalaryChange = (event) => {
     const newMaxSalary = event.target.value;
-    if (newMaxSalary === '' || (minSalary !== '' && parseInt(newMaxSalary) >= parseInt(minSalary))) {
-      setMaxSalary(newMaxSalary);
-      if (onChange) {
-        onChange([minSalary, newMaxSalary], currency);
-      }
+    setMaxSalary(newMaxSalary);
+    if (minSalary !== '' && newMaxSalary < minSalary) {
+      setMinSalary(newMaxSalary);
+    }
+    if (onChange) {
+      onChange([minSalary, newMaxSalary], currency);
     }
   };
+  
   const handleCurrencyChange = (event) => {
     setCurrency(event.target.value);
     if (onChange) {
@@ -39,9 +41,9 @@ function SalaryRange({ value, onChange }) {
       <div className='flex flex-col items-center'>
         <h2>Salary Range</h2>
         <div>
-          <label htmlFor="from" className="mr-2">from:</label>
+          <label htmlFor="min-from" className="mr-2">from:</label>
           <input
-            id="from"
+            id="min-from"
             type="number"
             value={minSalary}
             onChange={handleMinSalaryChange}
@@ -49,14 +51,14 @@ function SalaryRange({ value, onChange }) {
             className="text-black border border-gray-400 rounded-l-lg px-4 py-2 w-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
-            id="to"
+            id="max-to"
             type="number"
             value={maxSalary}
             onChange={handleMaxSalaryChange}
             placeholder="Max"
             className="text-black border border-gray-400 rounded-r-lg px-4 py-2 w-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <label htmlFor="to" className="ml-2">:to</label>
+          <label htmlFor="max-to" className="ml-2">:to</label>
         </div>
       </div>
       <div className="flex flex-col items-center ml-2">

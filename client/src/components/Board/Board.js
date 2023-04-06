@@ -7,7 +7,7 @@ import ProfileSidebar from '../ProfileSidebar/ProfileSidebar';
 import SearchBar from '../SearchBar/SearchBar'; 
 
 function Board() {
-  const [regions, setRegions] = useState(['Moscow', 'Saint Petersburg']);
+  const [regions, setRegions] = useState([]);
   const [salaryRange, setSalaryRange] = useState({ from: '', to: '' });
   const [isProfileSidebarOpen, setIsProfileSidebarOpen] = useState(false);
 

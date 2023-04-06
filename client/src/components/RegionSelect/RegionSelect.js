@@ -6,14 +6,24 @@ import { searchRegions } from './../algorithm/api.js';
 function RegionSelect({ value, onChange, addRegion, removeRegion, regions }) {
   const [newRegion, setNewRegion] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const searchFirstString = (substring, objectArray) => {
+    const lowerSubstring = substring.trim().toLowerCase();
+    return objectArray.find(obj => obj.text.toLowerCase().startsWith(lowerSubstring));
+  }
 
+  const searchCityInList = (cityName, cityList) => {
+    return cityList.some(city => city === cityName);
+  }
 
   const handleNewRegionSubmit = (event) => {
     event.preventDefault();
-    if (newRegion.trim() !== '') {
-      addRegion(newRegion.trim());
+    const serachCity = searchFirstString(newRegion.trim(), searchResults);
+    if (serachCity !== undefined && !searchCityInList(serachCity.text, regions)) {
+      addRegion(serachCity.text);
       setNewRegion('');
+      setSearchResults([]);
     }
+    
   };
 
   const handleRegionClick = (region) => {
@@ -25,7 +35,7 @@ function RegionSelect({ value, onChange, addRegion, removeRegion, regions }) {
       if (newRegionValue.trim() !== '' && newRegionValue.trim().length > 2) {
         searchRegions(newRegionValue).then(data => {
             setSearchResults(data);
-        });
+        });     
       } else {
         setSearchResults([]);
       }
@@ -51,13 +61,13 @@ function RegionSelect({ value, onChange, addRegion, removeRegion, regions }) {
         />
       </form>
       {searchResults.map((region) => (
-        <div
+        <div  
           key={region.id}
           onClick={() => {
             addRegion(region.text);
             setNewRegion('');
             setSearchResults([]);
-          }}
+          }} 
           className="flex text-black items-center justify-between bg-gray-100 hover:bg-emerald-100 rounded-lg px-4 py-2 mt-2 cursor-pointer"
         >
           <span>{region.text}</span>
