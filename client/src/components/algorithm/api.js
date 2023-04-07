@@ -1,25 +1,22 @@
 const baseUrl = 'https://api.hh.ru';
 
-export const searchVacancies = (params) => {
+export const searchVacancies = async (params) => {
   const url = new URL(`${baseUrl}/vacancies`);
-  url.search = new URLSearchParams({
-    text: params.text,
-    area: 113,
-    per_page: 10
-  });
+  url.search = new URLSearchParams(params);
 
-  return fetch(url, {
-    method: 'GET',
-    headers: {
-      'User-Agent': 'application/json'
-    }
-  })
-    .then(response => response.json())
-    .then(data => data)
-    .catch(error => {
-      console.error(error);
-      return error;
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'application/json'
+      }
     });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
 };
 
 export const searchRegions = (newRegionValue) => {

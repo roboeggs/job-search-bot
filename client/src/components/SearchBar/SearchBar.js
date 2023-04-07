@@ -1,19 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const SearchBar = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const SearchBar = ({ searchTerm, onSearch }) => {
+  const [searchTermValue, setSearchTermValue] = useState(searchTerm || '');
+
+  useEffect(() => {
+    setSearchTermValue(searchTerm || '');
+  }, [searchTerm]);
 
   const handleInputChange = (event) => {
-    setSearchTerm(event.target.value);
+    setSearchTermValue(event.target.value);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSearch(searchTerm);
+    onSearch(searchTermValue);
   };
 
   const handleClear = () => {
-    setSearchTerm('');
+    setSearchTermValue('');
     onSearch('');
   };
 
@@ -23,11 +27,11 @@ const SearchBar = ({ onSearch }) => {
         <input
           type="text"
           placeholder="Search"
-          value={searchTerm}
+          value={searchTermValue}
           onChange={handleInputChange}
           className="text-black bg-transparent outline-none flex-grow"
         />
-        {searchTerm && (
+        {searchTermValue && (
           <button type="button" onClick={handleClear} className="ml-2 focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500 hover:text-gray-700" viewBox="0 0 20 20" fill="currentColor">
               <path
@@ -38,13 +42,13 @@ const SearchBar = ({ onSearch }) => {
             </svg>
           </button>
         )}
+        <button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow-md ml-2"
+        >
+          Search
+        </button>
       </div>
-      <button
-        type="submit"
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow-md"
-      >
-        Search
-      </button>
     </form>
   );
 };
