@@ -12,20 +12,24 @@ function RegionSelect({ value, onChange, addRegion, removeRegion, regions }) {
   }
 
   const searchCityInList = (cityName, cityList) => {
-    return cityList.some(city => city === cityName);
+    return cityList.some(city => city.text === cityName);
   }
 
   const handleAddRegion = (region) => {
-    addRegion(region);
+    const newRegion = {
+      id: region.id, // генерируем случайный id
+      text: region.text,
+    }
+    addRegion(newRegion);
     setNewRegion('');
     setSearchResults([]);
   };
-  
+
   const handleNewRegionSubmit = (event) => {
     event.preventDefault();
     const serachCity = searchFirstString(newRegion.trim(), searchResults);
     if (serachCity !== undefined && !searchCityInList(serachCity.text, regions)) {
-      handleAddRegion(serachCity.text);
+      handleAddRegion(serachCity);
     }
   };
 
@@ -37,15 +41,15 @@ function RegionSelect({ value, onChange, addRegion, removeRegion, regions }) {
     debounce((newRegionValue) => {
       if (newRegionValue.trim() !== '' && newRegionValue.trim().length > 2) {
         searchRegions(newRegionValue).then(data => {
-            setSearchResults(data);
-        });     
+          setSearchResults(data);
+        });
       } else {
         setSearchResults([]);
       }
     }, 500),
     []
   );
-  
+
   const handleNewRegionChange = (event) => {
     const newRegionValue = event.target.value.trim();
     setNewRegion(newRegionValue);
@@ -64,34 +68,46 @@ function RegionSelect({ value, onChange, addRegion, removeRegion, regions }) {
         />
       </form>
       {searchResults.map((region) => (
-        <div  
+        <div
           key={region.id}
-          onClick={() =>  searchCityInList(region.text, regions) ? '' : handleAddRegion(region.text)}
+          onClick={() => searchCityInList(region.text, regions) ? '' : handleAddRegion(region)}
           className="flex text-black items-center justify-between bg-gray-100 hover:bg-emerald-100 rounded-lg px-4 py-2 mt-2 cursor-pointer"
         >
           <span>{region.text}</span>
         </div>
       ))}
       {regions.map((region) => (
-        <div
-          key={region}
-          onClick={() => handleRegionClick(region)}
-          className="flex text-black items-center justify-between bg-gray-100 rounded-lg px-4 py-2 mt-2 cursor-pointer"
-        >
-          <span>{region}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+        <div key={region.id}>
+          <div
+            onClick={() => handleRegionClick(region)}
+            className="flex text-black items-center justify-between bg-gray-100 rounded-lg px-4 py-2 mt-2 cursor-pointer"
+          >
+            <span>{region.text}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+          </div>
         </div>
-      ))}
+))}
+
+
     </div>
   );
 }
 
 RegionSelect.propTypes = {
-  value: PropTypes.arrayOf(PropTypes.string),
+  value: PropTypes.arrayOf(PropTypes.string), 
   onChange: PropTypes.func,
   addRegion: PropTypes.func,
   removeRegion: PropTypes.func,
-  regions: PropTypes.array
+  regions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      text: PropTypes.string.isRequired
+    })
+  ).isRequired,
 };
 
 export default RegionSelect;

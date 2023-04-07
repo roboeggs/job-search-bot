@@ -4,7 +4,8 @@ import SalaryRange from '../SalaryRange/SalaryRange';
 import ResponseExample from '../ResponseExample/ResponseExample';
 import Header from '../Header/Header';
 import ProfileSidebar from '../ProfileSidebar/ProfileSidebar';
-import SearchBar from '../SearchBar/SearchBar'; 
+import SearchBar from '../SearchBar/SearchBar';
+import { searchVacancies } from './../algorithm/api.js';
 
 function Board() {
   const [regions, setRegions] = useState([]);
@@ -21,6 +22,9 @@ function Board() {
 
   const handleSearch = (searchTerm) => {
     console.log(`Search term: ${searchTerm}`);
+    console.log(searchVacancies(searchTerm).then(data => {
+      
+      console.log(data)}));
   };
 
   const handleSalaryRangeChange = (from, to) => {
@@ -51,11 +55,10 @@ function Board() {
         <h2 className="text-xl font-bold mb-4">Selected Regions</h2>
         <ul>
           {regions.map((region) => (
-            <li key={region} className="mb-2">
-              {region}
-            </li>
+            <li key={region.id}>{region.text}</li>
           ))}
         </ul>
+   
         <h2 className="text-xl font-bold my-4">
           Selected Salary Range: {salaryRange.from[0]} - {salaryRange.from[1]}
           <span className="uppercase"> {salaryRange.to}</span>

@@ -2,7 +2,11 @@ const baseUrl = 'https://api.hh.ru';
 
 export const searchVacancies = (params) => {
   const url = new URL(`${baseUrl}/vacancies`);
-  url.search = new URLSearchParams(params);
+  url.search = new URLSearchParams({
+    text: params.text,
+    area: 113,
+    per_page: 10
+  });
 
   return fetch(url, {
     method: 'GET',
