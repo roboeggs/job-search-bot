@@ -1,10 +1,11 @@
-import React, { useState, useRef  } from 'react';
+import React, { useState, useRef, useEffect  } from 'react';
 import RegionSelect from '../RegionSelect/RegionSelect';
 import SalaryRange from '../SalaryRange/SalaryRange';
 import ResponseExample from '../ResponseExample/ResponseExample';
 import Header from '../Header/Header';
 import ProfileSidebar from '../ProfileSidebar/ProfileSidebar';
 import SearchBar from '../SearchBar/SearchBar';
+import VacanciesList from '../VacanciesList/VacanciesList';
 import { searchVacancies } from './../algorithm/api.js';
 
 function Board() {
@@ -12,51 +13,37 @@ function Board() {
   const [regions, setRegions] = useState([]);
   const [salaryRange, setSalaryRange] = useState({ from: '', to: '' });
   const [isProfileSidebarOpen, setIsProfileSidebarOpen] = useState(false);
-  const [vacancies, setVacancies] = useState([]);
   const [hasMoreVacancies, setHasMoreVacancies] = useState(true);
   const [loadedVacanciesCount, setLoadedVacanciesCount] = useState(0);
   const [offset, setOffset] = useState(0);
 
-  const scrollRef = useRef(null);
+  const [vacancies, setVacancies] = useState([]);
+  const [page, setPage] = useState(1);
 
-  const handleScroll = async () => {
-    if (
-      scrollRef.current &&
-      scrollRef.current.scrollTop + scrollRef.current.clientHeight >=
-        scrollRef.current.scrollHeight
-    ) {
-      try {
-        const searchParameters = {
-          text: searchTerm,
-          area: '',
-          currency: 'RUR',
-          per_page: 10,
-          page: Math.ceil(offset / 10) + 1,
-        };
-  
-        const newVacancies = [];
-        for (const region of regions) {
-          const response = await searchVacancies({
-            ...searchParameters,
-            area: region.id,
-          });
-          if (response.items.length > 0) {
-            newVacancies.push(...response.items);
-          }
-        }
-  
-        setVacancies([...vacancies, ...newVacancies]);
-        setLoadedVacanciesCount(loadedVacanciesCount + searchParameters.per_page);
-        setOffset(offset + searchParameters.per_page);
-        if (newVacancies.length < searchParameters.per_page) {
-          setHasMoreVacancies(false);
-        }
-      } catch (error) {
-        console.error(error);
+  useEffect(() => {
+    loadMoreVacancies();
+  }, []);
+
+  const loadMoreVacancies = () => {
+    const searchParameters = {
+      text: searchTerm,
+      area: '52', // set the area parameter to an empty string
+      currency: 'RUR',
+      per_page: 5,
+      page: page,
+    };
+    
+    return searchVacancies(searchParameters).then((response) => {
+      const newVacancies = response.items;
+      setVacancies([...vacancies, ...newVacancies]);
+      setLoadedVacanciesCount(loadedVacanciesCount + newVacancies.length);
+      if (newVacancies.length < searchParameters.per_page) {
+        setHasMoreVacancies(false);
       }
-    }
+      setPage(page + 1);
+      return newVacancies;
+    });
   };
-  
 
   const handleAddRegion = (region) => {
     setRegions([...regions, region]);
@@ -66,38 +53,19 @@ function Board() {
     setRegions(regions.filter((region) => region !== regionToRemove));
   };
 
-  const handleSearch = async (value) => {
-    setVacancies([]);
-    setSearchTerm(value);
-    setLoadedVacanciesCount(0);
-    setHasMoreVacancies(true);
-    setOffset(0);
-  
-    const searchParameters = {
-      text: value,
-      area: '',
-      currency: 'RUR',
-      per_page: 10
-    };
-  
-    try {
-      const newVacancies = [];
-      for (const region of regions) {
-        const response = await searchVacancies({...searchParameters, area: region.id});
-        if (response.items.length > 0) {
-          newVacancies.push(...response.items);
-        }
-      }
-      console.log(newVacancies )
-      setVacancies(newVacancies);
-      setLoadedVacanciesCount(searchParameters.per_page);
-      if (newVacancies.length <= searchParameters.per_page) {
-        setHasMoreVacancies(false);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+const handleSearch = async (value) => {
+  setVacancies([]);
+  setSearchTerm(value);
+  setLoadedVacanciesCount(0);
+  setHasMoreVacancies(true);
+  setOffset(0);
+
+  try {
+    await loadMoreVacancies();
+  } catch (error) {
+    console.error(error);
+  }
+};
   
 
   const handleSalaryRangeChange = (from, to) => {
@@ -138,39 +106,10 @@ function Board() {
         <ResponseExample />
       </div>
       <ProfileSidebar isOpen={isProfileSidebarOpen} onClose={handleProfileSidebarClose} />
-      {vacancies.length > 0 && (
-  <div className="overflow-auto">
-    <table className="table-auto w-full">
-      <thead>
-        <tr>
-          <th className="px-4 py-2">Job Title</th>
-          <th className="px-4 py-2">City</th>
-          <th className="px-4 py-2">Link</th>
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-gray-200">
-        {vacancies.map((vacancy) => (
-          <tr key={vacancy.id}>
-            <td className="px-4 py-2">{vacancy.name}</td>
-            <td className="px-4 py-2">{vacancy.area.name}</td>
-            <td className="px-4 py-2">
-              <a
-                href={vacancy.alternate_url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {vacancy.alternate_url}
-              </a>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-)}
+      
+      {vacancies.length > 0 &&  <VacanciesList vacancies={vacancies} loadMore={loadMoreVacancies} />}
 
     </div>
   );
 }
-
 export default Board;
