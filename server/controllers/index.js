@@ -144,10 +144,11 @@ export const checkUser = async (req, res, next) => {
     const values = [req.body.email, req.body.password ];
     await conn.query(query, values, (err, result) => {
         if (err) return next(new AppError(err, 500));
-        console.log("------> Search Results")
-        console.log(result.rows.length);
-        if (result.rows.length !== 1){
-            res.status(102).json({
+        console.log("------> Search Results");
+        console.log(result.rows[0]);
+        if (!result.rowCount){
+            console.log("ererer");
+            res.status(401).json({
                 status: "success",
                 message: "Incorrect credentials",
             });
@@ -156,6 +157,7 @@ export const checkUser = async (req, res, next) => {
             res.status(200).json({
                 status: "success",
                 message: "Login successfully",
+                token: result.rows[0].jwt_token
             });
         }
     });
