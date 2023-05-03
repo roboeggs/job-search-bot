@@ -4,10 +4,7 @@ import Board from "./Board/Board";
 import Login from "./Login/Login";
 import Signup from "./Singup/Singup";
 import ProfileSettings  from "./ProfileSettings/ProfileSettings";
-// import Header from './landing/Header'; // прошу любить и жаловать компонент header
-// import Bed from './landing/Bed' // и окажите компоненту bed тёплый приём
-// import InfoForm from './landing/InfoForm';
-// import './App.css';
+
 
 function App() {
   return (
